@@ -42,14 +42,13 @@ socket.on('updateConnections', (data) => { bus.$emit('updateConnections', data) 
 
 bus.$on('sendCheckOrganisation', (data) => { socket.emit('sendCheckOrganisation', data) })
 
-bus.$on('sendAddOrganisationItem', (data) => { socket.emit('sendAddOrganisationItem', data) })
+bus.$on('sendAddItem', (data) => { socket.emit('sendAddItem', data) })
 
-bus.$on('sendDeleteOrganisationItem', (data) => { socket.emit('sendDeleteOrganisationItem', data) })
+bus.$on('sendDeleteItem', (data) => { socket.emit('sendDeleteItem', data) })
 
+bus.$on('sendSaveItemName', (data) => { socket.emit('sendSaveItemName', data) })
 
 // Receive
-
-socket.on('organisationId', (data) => { bus.$emit('organisationId', data) })
 
 socket.on('updateOrganisation', (data) => { bus.$emit('updateOrganisation', data) })
 

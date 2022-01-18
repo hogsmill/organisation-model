@@ -1,23 +1,23 @@
 
+const orgFuns = require('./lib/org.js')
+
 const { v4: uuidv4 } = require('uuid')
 
-function newOrg(id, name) {
+function newItem(name, parent) {
   return {
-    orgId: id,
+    id: uuidv4(),
     name: name,
-    parent: '',
+    parent: parent,
     children: [],
     members: []
   }
 }
 
 function _updateOrganisation(db, io) {
-  db.orgCollection.findOne({}, (err, res) => {
+  db.itemsCollection.find({}).toArray((err, res) => {
     if (err) throw err
-    db.itemsCollection.find({orgId: res.id}).toArray((err, res) => {
-      if (err) throw err
-      io.emit('updateOrganisation', res)
-    })
+    const org = orgFuns.createOrg(res)
+    io.emit('updateOrganisation', org)
   })
 }
 
@@ -27,59 +27,74 @@ module.exports = {
 
     if (debugOn) { console.log('checkOrganisation', name) }
 
-    db.orgCollection.findOne({}, (err, res) => {
+    db.itemsCollection.findOne({parent: ''}, (err, res) => {
       if (err) throw err
       if (!res) {
-        const id = uuidv4()
-        db.orgCollection.insertOne({id: id}, (err) => {
+        const item = newItem(name, '')
+        db.itemsCollection.insertOne(item, (err) => {
           if (err) throw err
-          const org = newOrg(id, name)
-          console.log(org)
-          db.itemsCollection.insertOne(org, (err) => {
-            if (err) throw err
-            _updateOrganisation(db, io)
-          })
-          io.emit('organisationId', id)
+          _updateOrganisation(db, io)
         })
       } else {
-        io.emit('organisationId', res.id)
         _updateOrganisation(db, io)
       }
     })
   },
 
-  addOrganisationItem: function(db, io, data, debugOn) {
+  addItem: function(db, io, data, debugOn) {
 
-    if (debugOn) { console.log('addOrganisationItem', data) }
+    if (debugOn) { console.log('addItem', data) }
 
-    db.itemsCollection.insertOne(data, (err) => {
+    db.itemsCollection.findOne({id: data.parent}, (err, res) => {
       if (err) throw err
-      _updateOrganisation(db, io)
+      const item = newItem(data.name, data.parent)
+      const children = res.children
+      children.push(item.id)
+      db.itemsCollection.updateOne({id: data.parent}, {$set: {children: children}}, (err) => {
+        if (err) throw err
+        db.itemsCollection.insertOne(item, (err) => {
+          if (err) throw err
+          _updateOrganisation(db, io)
+        })
+      })
     })
   },
 
-  editOrganisationItem: function(db, io, data, debugOn) {
+  deleteItem: function(db, io, data, debugOn) {
 
-    if (debugOn) { console.log('editOrganisationItem', data) }
+    if (debugOn) { console.log('deleteItem', data) }
 
-    db.itemsCollection.findOne({id: data.item.id}, (err, res) => {
+    db.itemsCollection.findOne({id: data.parent}, (err, res) => {
+      if (err) throw err
+      const children = []
+      for (let i = 0; i < res.children.length; i++) {
+        if (res.children[i] != data.id) {
+          children.push(res.children[i])
+        }
+      }
+      db.itemsCollection.updateOne({id: data.parent}, {$set: {children: children}}, (err) => {
+        if (err) throw err
+        db.itemsCollection.deleteOne({id: data.id}, (err) => {
+          if (err) throw err
+          _updateOrganisation(db, io)
+        })
+      })
+    })
+  },
+
+  saveItemName: function(db, io, data, debugOn) {
+
+    if (debugOn) { console.log('saveItemName', data) }
+
+    db.itemsCollection.findOne({id: data.id}, (err, res) => {
       if (err) throw err
       if (res) {
-        db.itemsCollection.replaceOne({id: data.item.id}, (err) => {
-          _updateOrganisation(db, io)
+        db.itemsCollection.updateOne({id: data.id}, {$set: {name: data.name}}, (err) => {
+          if (err) throw err
+          _updateOrganisation(db, io, debugOn)
         })
       }
     })
-  },
-
-  deleteOrganisationItem: function(db, io, data, debugOn) {
-
-    if (debugOn) { console.log('deleteOrganisationItem', data) }
-
-    db.itemsCollection.deleteOne({id: data.item.id}, (err) => {
-      if (err) throw err
-      _updateOrganisation(db, io, debugOn)
-    })
-  },
+  }
 
 }

@@ -8,8 +8,8 @@
       WARNING: {{ localStorageStatus }} - please enable cookies in browser settings
     </div>
     <h1>{{ organisation() }}</h1>
-    <Display v-if="tab == 'display'" />
-    <Define v-if="tab == 'define'" />
+    <CheckList v-if="tab == 'checkList'" />
+    <Organisation v-if="tab == 'organisation'" />
   </div>
 </template>
 
@@ -19,15 +19,15 @@ import bus from './socket.js'
 import ls from './lib/localStorage.js'
 
 import Header from './components/Header.vue'
-import Display from './components/Display.vue'
-import Define from './components/Define.vue'
+import CheckList from './components/CheckList.vue'
+import Organisation from './components/Organisation.vue'
 
 export default {
   name: 'App',
   components: {
     Header,
-    Display,
-    Define
+    CheckList,
+    Organisation
   },
   data() {
     return {

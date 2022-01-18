@@ -9,8 +9,9 @@ export const store = new Vuex.Store({
     connections: 0,
     connectionError: null,
     localStorageStatus: true,
-    tab: 'display',
-    organisationId: ''
+    tab: 'organisation',
+    organisationId: '',
+    organisation: []
   },
   getters: {
     thisGame: (state) => {

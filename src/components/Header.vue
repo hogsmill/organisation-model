@@ -20,11 +20,11 @@
         Organisation Model
       </h1>
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item" :class="{ active: tab == 'display' }">
-          <a class="nav-link pointer" @click="setTab('display')">Display</a>
+        <li class="nav-item" :class="{ active: tab == 'checkList' }">
+          <a class="nav-link pointer" @click="setTab('checkList')">Check List</a>
         </li>
-        <li class="nav-item" :class="{ active: tab == 'define' }">
-          <a class="nav-link pointer" @click="setTab('define')">Define</a>
+        <li class="nav-item" :class="{ active: tab == 'organisation' }">
+          <a class="nav-link pointer" @click="setTab('organisation')">Organisation</a>
         </li>
         <li class="nav-item">
           <a class="nav-link pointer" @click="show()">Feedback</a>
