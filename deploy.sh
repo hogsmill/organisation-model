@@ -14,11 +14,12 @@ done
 BASEPORT=4750
 REPO="https://github.com/hogsmill/organisation-model.git"
 MAINAPP="organisation-model"
-MAINCOLLECTION="organisationModel"
+MAINORGCOLLECTION="organisationModel"
+MAINITEMSCOLLECTION="organisationModelItems"
 MAINNAME="Organisation Model"
 ROUTES=(
-  '',''
-  'new','New'
+  '','','Agile Simulations'
+  'new','New', 'New'
 )
 
 for ((i = 0; i < ${#ROUTES[@]}; i++))
@@ -26,14 +27,19 @@ do
   REC="${ROUTES[$i]}"
   ROUTE=`echo $REC | cut -d, -f1`
   COLLECTIONSUFFIX=`echo $REC | cut -d, -f2`
+  ORGANISATION=`echo $REC | cut -d, -f3`
 
   APP=$MAINAPP
   if [ "$ROUTE" != "" ]; then
     APP="${APP}-${ROUTE}"
   fi
-  COLLECTION=$MAINCOLLECTION
+  ORGCOLLECTION=$MAINORGCOLLECTION
   if [ "$COLLECTIONSUFFIX" != "" ]; then
-    COLLECTION="${COLLECTION}${COLLECTIONSUFFIX}"
+    ORGCOLLECTION="${ORGCOLLECTION}${COLLECTIONSUFFIX}"
+  fi
+  ITEMSCOLLECTION=$MAINITEMSCOLLECTION
+  if [ "$COLLECTIONSUFFIX" != "" ]; then
+    ITEMSCOLLECTION="${ITEMSCOLLECTION}${COLLECTIONSUFFIX}"
   fi
   APPNAME=$MAINNAME
   let PORT=$BASEPORT+$i
@@ -52,7 +58,9 @@ do
   fi
   ENVFILE="$DIR/.env"
   echo "VUE_APP_PORT=$PORT" > $ENVFILE
-  echo "VUE_APP_COLLECTION=$COLLECTION" >> $ENVFILE
+  echo "VUE_APP_ORG_COLLECTION=$ORGCOLLECTION" >> $ENVFILE
+  echo "VUE_APP_ITEMS_COLLECTION=$ITEMSCOLLECTION" >> $ENVFILE
+  echo "VUE_APP_ORGANISATION=$ORGANISATION" >> $ENVFILE
   if [ ! -z "$APPNAME" ]; then
     echo "VUE_APP_NAME=$APPNAME" >> $ENVFILE
   fi

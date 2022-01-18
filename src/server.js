@@ -8,7 +8,8 @@ const os = require('os')
 const prod = os.hostname() == 'agilesimulations' ? true : false
 const logFile = prod ? process.argv[4] : 'server.log'
 const port = prod ? process.env.VUE_APP_PORT : 3016
-const gameCollection =  prod ? process.env.VUE_APP_COLLECTION : 'socketTest'
+const orgCollection =  prod ? process.env.VUE_APP_ORG_COLLECTION : 'organisationModel'
+const itemsCollection =  prod ? process.env.VUE_APP_ITEMS_COLLECTION : 'organisationModelItems'
 
 ON_DEATH((signal, err) => {
   let logStr = new Date()
@@ -80,9 +81,11 @@ MongoClient.connect(url, { useUnifiedTopology: true, maxIdleTimeMS: maxIdleTime 
   if (err) throw err
   db = client.db('db')
 
-  db.createCollection(gameCollection, function(error, collection) {})
+  db.createCollection(orgCollection, function(error, collection) {})
+  db.createCollection(itemsCollection, function(error, collection) {})
 
-  db.gameCollection = db.collection(gameCollection)
+  db.orgCollection = db.collection(orgCollection)
+  db.itemsCollection = db.collection(itemsCollection)
 
   io.on('connection', (socket) => {
     const connection = socket.handshake.headers.host
@@ -102,9 +105,11 @@ MongoClient.connect(url, { useUnifiedTopology: true, maxIdleTimeMS: maxIdleTime 
       emit('updateConnections', {connections: connections, maxConnections: maxConnections})
     })
 
-    socket.on('sendTestMessage', (data) => { dbStore.testMessage(db, io, data, debugOn) })
+    socket.on('sendCheckOrganisation', (data) => { dbStore.checkOrganisation(db, io, data, debugOn) })
 
-    socket.on('sendEmitMessage', (data) => { emit('emitMessage', data) })
+    socket.on('sendAddOrganisationItem', (data) => { dbStore.addOrganisationItem(db, io, data, debugOn) })
+
+    socket.on('sendDeleteOrganisationItem', (data) => { dbStore.deleteOrganisationItem(db, io, data, debugOn) })
 
   })
 })

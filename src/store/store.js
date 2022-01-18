@@ -5,10 +5,12 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
-    thisGame: 'Socket Test',
+    thisGame: 'Organisation Model',
     connections: 0,
     connectionError: null,
-    localStorageStatus: true
+    localStorageStatus: true,
+    tab: 'display',
+    organisationId: ''
   },
   getters: {
     thisGame: (state) => {
@@ -22,6 +24,15 @@ export const store = new Vuex.Store({
     },
     getLocalStorageStatus: (state) => {
       return state.localStorageStatus
+    },
+    getTab: (state) => {
+      return state.tab
+    },
+    getOrganisationId: (state) => {
+      return state.organisationId
+    },
+    getOrganisation: (state) => {
+      return state.organisation
     }
   },
   mutations: {
@@ -33,6 +44,15 @@ export const store = new Vuex.Store({
     },
     localStorageStatus: (state, payload) => {
       state.localStorageStatus = payload
+    },
+    setTab: (state, payload) => {
+      state.tab = payload
+    },
+    setOrganisationId: (state, payload) => {
+      state.organisationId = payload
+    },
+    updateOrganisation: (state, payload) => {
+      state.organisation = payload
     }
   },
   actions: {
@@ -44,6 +64,15 @@ export const store = new Vuex.Store({
     },
     localStorageStatus: ({ commit }, payload) => {
       commit('localStorageStatus', payload)
+    },
+    setTab: ({ commit }, payload) => {
+      commit('setTab', payload)
+    },
+    setOrganisationId: ({ commit }, payload) => {
+      commit('setOrganisationId', payload)
+    },
+    updateOrganisation: ({ commit }, payload) => {
+      commit('updateOrganisation', payload)
     }
   }
 })

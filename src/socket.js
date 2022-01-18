@@ -40,16 +40,17 @@ socket.on('updateConnections', (data) => { bus.$emit('updateConnections', data) 
 
 // Send
 
-bus.$on('sendTestMessage', (data) => { socket.emit('sendTestMessage', data) })
+bus.$on('sendCheckOrganisation', (data) => { socket.emit('sendCheckOrganisation', data) })
 
-bus.$on('sendEmitMessage', (data) => { socket.emit('sendEmitMessage', data) })
+bus.$on('sendAddOrganisationItem', (data) => { socket.emit('sendAddOrganisationItem', data) })
 
-bus.$on('sendShowGraph', (data) => { bus.$emit('showGraph', data) })
+bus.$on('sendDeleteOrganisationItem', (data) => { socket.emit('sendDeleteOrganisationItem', data) })
+
 
 // Receive
 
-socket.on('testMessage', (data) => { bus.$emit('testMessage', data) })
+socket.on('organisationId', (data) => { bus.$emit('organisationId', data) })
 
-socket.on('emitMessage', (data) => { bus.$emit('emitMessage', data) })
+socket.on('updateOrganisation', (data) => { bus.$emit('updateOrganisation', data) })
 
 export default bus

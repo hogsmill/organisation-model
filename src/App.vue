@@ -1,22 +1,15 @@
 <template>
   <div id="app">
+    <Header />
     <div v-if="connectionError" class="not-connected">
       WARNING: You are not connected to the server: {{ connectionError }}
     </div>
     <div v-if="localStorageStatus != 'ok'" class="not-connected">
       WARNING: {{ localStorageStatus }} - please enable cookies in browser settings
     </div>
-    <h1>App Testbed</h1>
-    <div class="buttons">
-      <i class="fas fa-envelope-open-text" :class="{'selected': tab == 'messaging'}" @click="setTab('messaging')" title="Message/socket testing" />
-      <i class="fas fa-chart-line" :class="{'selected': tab == 'graph'}" @click="setTab('graph')" title="Graph testing" />
-      <i class="fas fa-qrcode" :class="{'selected': tab == 'qrcode'}" @click="setTab('qrcode')" title="QR Code testing" />
-      <i class="fas fa-window-maximize" :class="{'selected': tab == 'modal'}" @click="setTab('modal')" title="Modal Test" />
-    </div>
-    <Messaging v-if="tab == 'messaging'" />
-    <Graph v-if="tab == 'graph'" />
-    <QrCode v-if="tab == 'qrcode'" />
-    <Modal v-if="tab == 'modal'"  />
+    <h1>{{ organisation() }}</h1>
+    <Display v-if="tab == 'display'" />
+    <Define v-if="tab == 'define'" />
   </div>
 </template>
 
@@ -25,28 +18,19 @@ import bus from './socket.js'
 
 import ls from './lib/localStorage.js'
 
-import Messaging from './components/Messaging.vue'
-import Graph from './components/Graph.vue'
-import QrCode from './components/QrCode.vue'
-import Modal from './components/Modal.vue'
+import Header from './components/Header.vue'
+import Display from './components/Display.vue'
+import Define from './components/Define.vue'
 
 export default {
   name: 'App',
   components: {
-    Messaging,
-    Graph,
-    QrCode,
-    Modal
+    Header,
+    Display,
+    Define
   },
   data() {
     return {
-      tab: '',
-      option: '',
-      options: [],
-      opts: {
-        'first': ['one', 'two', 'three'],
-        'second': ['a', 'b', 'c']
-      }
     }
   },
   computed: {
@@ -55,6 +39,12 @@ export default {
     },
     localStorageStatus() {
       return this.$store.getters.getLocalStorageStatus
+    },
+    tab() {
+      return this.$store.getters.getTab
+    },
+    organisationId() {
+      return this.$store.getters.getOrganisationId
     }
   },
   created() {
@@ -68,10 +58,20 @@ export default {
       this.$store.dispatch('updateConnectionError', null)
       this.$store.dispatch('updateConnections', data)
     })
+
+    bus.$emit('sendCheckOrganisation', this.organisation())
+
+    bus.$on('organisationId', (data) => {
+      this.$store.dispatch('setOrganisationId', data)
+    })
+
+    bus.$on('updateOrganisation', (data) => {
+      this.$store.dispatch('updateOrganisation', data)
+    })
   },
   methods: {
-    setTab(tab) {
-      this.tab = tab
+    organisation() {
+      return process.env.VUE_APP_ORGANISATION ? process.env.VUE_APP_ORGANISATION : 'Agile Simulations'
     }
   }
 }
