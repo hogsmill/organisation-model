@@ -12,13 +12,13 @@
     </div>
     <div class="admin">
       <div class="admin-header">
-        <i v-if="showChecklist" @click="setShowChecklist(false)" title="collapse" class="fas fa-caret-up toggle" />
-        <i v-if="!showChecklist" @click="setShowChecklist(true)" title="expand" class="fas fa-caret-down toggle" />
+        <i v-if="showCheckList" @click="setShowCheckList(false)" title="collapse" class="fas fa-caret-up toggle" />
+        <i v-if="!showCheckList" @click="setShowCheckList(true)" title="expand" class="fas fa-caret-down toggle" />
       </div>
       <h5>
-        Checklist
+        CheckList
       </h5>
-      <CheckList v-if="showChecklist" />
+      <CheckList v-if="showCheckList" />
     </div>
   </div>
 </template>
@@ -35,15 +35,15 @@ export default {
   data() {
     return {
       showOrganisation: false,
-      showChecklist: false
+      showCheckList: false
     }
   },
   methods: {
     setShowOrganisation(val) {
       this.showOrganisation = val
     },
-    setShowChecklist(val) {
-      this.showChecklist = val
+    setShowCheckList(val) {
+      this.showCheckList = val
     }
   }
 }
@@ -52,6 +52,7 @@ export default {
 <style lang="scss">
   .admin {
     width: 90%;
+    max-width: 600px;
     margin: 24px auto;
     border: 1px solid #888;;
 
@@ -62,6 +63,21 @@ export default {
         font-size: xx-large;
         color: #888;
       }
+    }
+
+    .fas {
+      &:hover {
+        cursor: pointer;
+        color: #444;
+      }
+    }
+
+    th, td {
+      padding: 3px;
+    }
+
+    .left {
+      text-align: left;
     }
   }
 </style>

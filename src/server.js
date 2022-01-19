@@ -113,6 +113,16 @@ MongoClient.connect(url, { useUnifiedTopology: true, maxIdleTimeMS: maxIdleTime 
 
     socket.on('sendSaveItemName', (data) => { dbStore.saveItemName(db, io, data, debugOn) })
 
+    socket.on('sendToggleItemIsTeam', (data) => { dbStore.toggleItemIsTeam(db, io, data, debugOn) })
+
+    socket.on('sendAddCheckListItem', (data) => { dbStore.addCheckListItem(db, io, data, debugOn) })
+
+    socket.on('sendSaveCheckListItemName', (data) => { dbStore.saveCheckListItemName(db, io, data, debugOn) })
+
+    socket.on('sendToggleEnableListItem', (data) => { dbStore.toggleEnableListItem(db, io, data, debugOn) })
+
+    socket.on('sendToggleHasItem', (data) => { dbStore.toggleHasItem(db, io, data, debugOn) })
+
   })
 })
 

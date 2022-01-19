@@ -48,8 +48,20 @@ bus.$on('sendDeleteItem', (data) => { socket.emit('sendDeleteItem', data) })
 
 bus.$on('sendSaveItemName', (data) => { socket.emit('sendSaveItemName', data) })
 
+bus.$on('sendToggleItemIsTeam', (data) => { socket.emit('sendToggleItemIsTeam', data) })
+
+bus.$on('sendAddCheckListItem', (data) => { socket.emit('sendAddCheckListItem', data) })
+
+bus.$on('sendSaveCheckListItemName', (data) => { socket.emit('sendSaveCheckListItemName', data) })
+
+bus.$on('sendToggleEnableListItem', (data) => { socket.emit('sendToggleEnableListItem', data) })
+
+bus.$on('sendToggleHasItem', (data) => { socket.emit('sendToggleHasItem', data) })
+
 // Receive
 
 socket.on('updateOrganisation', (data) => { bus.$emit('updateOrganisation', data) })
+
+socket.on('updateCheckList', (data) => { bus.$emit('updateCheckList', data) })
 
 export default bus

@@ -42,9 +42,6 @@ export default {
     },
     tab() {
       return this.$store.getters.getTab
-    },
-    organisationId() {
-      return this.$store.getters.getOrganisationId
     }
   },
   created() {
@@ -61,12 +58,12 @@ export default {
 
     bus.$emit('sendCheckOrganisation', this.organisation())
 
-    bus.$on('organisationId', (data) => {
-      this.$store.dispatch('setOrganisationId', data)
-    })
-
     bus.$on('updateOrganisation', (data) => {
       this.$store.dispatch('updateOrganisation', data)
+    })
+
+    bus.$on('updateCheckList', (data) => {
+      this.$store.dispatch('updateCheckList', data)
     })
   },
   methods: {
@@ -96,7 +93,6 @@ export default {
     .fas {
       padding: 6px;
       margin: 6px;
-      border: 1px solid;
       border-radius: 6px;
       color: #f4511e;
 

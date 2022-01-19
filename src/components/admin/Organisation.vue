@@ -6,6 +6,7 @@
         <i v-if="item.item.children.length" class="fas fa-trash-alt disabled" title="Cannot Delete" @click="cannotDeleteItem(item.item)" />
         <i v-if="!item.item.children.length" class="fas fa-trash-alt" title="Delete" @click="deleteItem(item.item)" />
         <i class="fas fa-plus-square" title="Add Child" @click="addChild(item.item.id)" />
+        <input type="checkbox" :checked="item.item.isTeam" @click="toggleEnableIsTeam(item.item)">
         {{ item.item.name }}
         <i class="fas fa-edit" title="Edit Item Name" @click="editName(item.item.id)" />
       </div>
@@ -27,9 +28,6 @@ export default {
     }
   },
   computed: {
-    organisationId() {
-      return this.$store.getters.getOrganisationId
-    },
     organisation() {
       return this.$store.getters.getOrganisation
     }
@@ -53,6 +51,10 @@ export default {
       const itemName = document.getElementById('editing-name-' + id).value
       bus.$emit('sendSaveItemName', {id: id, name: itemName})
       this.editingName = ''
+    },
+    toggleEnableIsTeam(item) {
+      const isTeam = !item.isTeam
+      bus.$emit('sendToggleItemIsTeam', {id: item.id, isTeam: isTeam})
     }
   }
 }
@@ -60,9 +62,14 @@ export default {
 
 <style lang="scss">
   .org {
-    width: 50%;
     text-align: left;
     margin: 0 auto;
+    padding: 12px;
+
+    .fas {
+      margin: 3px;
+      color: #888;
+    }
 
     .sub {
       display: inline-block;

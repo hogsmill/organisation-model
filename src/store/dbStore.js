@@ -7,9 +7,11 @@ function newItem(name, parent) {
   return {
     id: uuidv4(),
     name: name,
+    isTeam: false,
     parent: parent,
     children: [],
-    members: []
+    members: [],
+    items: []
   }
 }
 
@@ -18,6 +20,13 @@ function _updateOrganisation(db, io) {
     if (err) throw err
     const org = orgFuns.createOrg(res)
     io.emit('updateOrganisation', org)
+  })
+}
+
+function _updateCheckList(db, io) {
+  db.listCollection.find({}).toArray((err, res) => {
+    if (err) throw err
+    io.emit('updateCheckList', res)
   })
 }
 
@@ -39,6 +48,7 @@ module.exports = {
         _updateOrganisation(db, io)
       }
     })
+    _updateCheckList(db, io)
   },
 
   addItem: function(db, io, data, debugOn) {
@@ -86,14 +96,76 @@ module.exports = {
 
     if (debugOn) { console.log('saveItemName', data) }
 
+    db.itemsCollection.updateOne({id: data.id}, {$set: {name: data.name}}, (err) => {
+      if (err) throw err
+      _updateOrganisation(db, io, debugOn)
+    })
+  },
+
+  toggleItemIsTeam: function(db, io, data, debugOn) {
+
+    if (debugOn) { console.log('toggleItemIsTeam', data) }
+
+    db.itemsCollection.updateOne({id: data.id}, {$set: {isTeam: data.isTeam}}, (err) => {
+      if (err) throw err
+      _updateOrganisation(db, io, debugOn)
+    })
+  },
+
+  addCheckListItem: function(db, io, data, debugOn) {
+
+    if (debugOn) { console.log('addCheckListItem', data) }
+
+    const item = {
+      id: uuidv4(),
+      name: data,
+      enabled: false
+    }
+    db.listCollection.insertOne(item, (err) => {
+      if (err) throw err
+      _updateCheckList(db, io)
+    })
+  },
+
+  saveCheckListItemName: function(db, io, data, debugOn) {
+
+    if (debugOn) { console.log('saveCheckListItemName', data) }
+
+    db.listCollection.updateOne({id: data.id}, {$set: {name: data.name}}, (err) => {
+      if (err) throw err
+      _updateCheckList(db, io)
+    })
+  },
+
+  toggleEnableListItem: function(db, io, data, debugOn) {
+
+    if (debugOn) { console.log('toggleEnableListItem', data) }
+
+    db.listCollection.updateOne({id: data.id}, {$set: {enabled: data.enabled}}, (err) => {
+      if (err) throw err
+      _updateCheckList(db, io)
+    })
+  },
+
+  toggleHasItem: function(db, io, data, debugOn) {
+
+    if (debugOn) { console.log('toggleHasItem', data) }
+
     db.itemsCollection.findOne({id: data.id}, (err, res) => {
       if (err) throw err
-      if (res) {
-        db.itemsCollection.updateOne({id: data.id}, {$set: {name: data.name}}, (err) => {
-          if (err) throw err
-          _updateOrganisation(db, io, debugOn)
-        })
+      const items = []
+      for (let i = 0; i < res.items.length; i++) {
+        if (res.items[i] != data.item) {
+          items.push(res.items[i])
+        }
       }
+      if (data.hasItem) {
+        items.push(data.item)
+      }
+      db.itemsCollection.updateOne({id: data.id}, {$set: {items: items}}, (err) => {
+        if (err) throw err
+        _updateOrganisation(db, io, debugOn)
+      })
     })
   }
 

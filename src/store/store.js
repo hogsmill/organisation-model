@@ -9,9 +9,9 @@ export const store = new Vuex.Store({
     connections: 0,
     connectionError: null,
     localStorageStatus: true,
-    tab: 'organisation',
-    organisationId: '',
-    organisation: []
+    tab: 'checkList',
+    organisation: [],
+    checkList: []
   },
   getters: {
     thisGame: (state) => {
@@ -29,11 +29,20 @@ export const store = new Vuex.Store({
     getTab: (state) => {
       return state.tab
     },
-    getOrganisationId: (state) => {
-      return state.organisationId
-    },
     getOrganisation: (state) => {
       return state.organisation
+    },
+    getCheckList: (state) => {
+      return state.checkList
+    },
+    getCheckListEnabled: (state) => {
+      const items = []
+      for (let i = 0; i < state.checkList.length; i++) {
+        if (state.checkList[i].enabled) {
+          items.push(state.checkList[i])
+        }
+      }
+      return items
     }
   },
   mutations: {
@@ -49,11 +58,11 @@ export const store = new Vuex.Store({
     setTab: (state, payload) => {
       state.tab = payload
     },
-    setOrganisationId: (state, payload) => {
-      state.organisationId = payload
-    },
     updateOrganisation: (state, payload) => {
       state.organisation = payload
+    },
+    updateCheckList: (state, payload) => {
+      state.checkList = payload
     }
   },
   actions: {
@@ -69,11 +78,11 @@ export const store = new Vuex.Store({
     setTab: ({ commit }, payload) => {
       commit('setTab', payload)
     },
-    setOrganisationId: ({ commit }, payload) => {
-      commit('setOrganisationId', payload)
-    },
     updateOrganisation: ({ commit }, payload) => {
       commit('updateOrganisation', payload)
+    },
+    updateCheckList: ({ commit }, payload) => {
+      commit('updateCheckList', payload)
     }
   }
 })
