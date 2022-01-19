@@ -6,7 +6,7 @@
       </div>
     </div>
     <div v-for="(item, index) in organisation" :key="index" class="item">
-      <div class="sub" :style="{'padding-left': item.n * 25 + 'px'}">
+      <div class="sub" :style="{'padding-left': item.n * 25 + 'px'}" :class="{'lighter': !item.item.isTeam}">
         {{ item.item.name }}
       </div>
       <div v-for="(listItem, lindex) in checkList" :key="lindex" class="list-item">
@@ -60,6 +60,10 @@ export default {
     .item {
       height: 28px;
       border-bottom: 1px solid #888;
+
+      .lighter {
+        color: #ccc;
+      }
 
       .sub {
         width: 300px;
