@@ -9,6 +9,7 @@ const prod = os.hostname() == 'agilesimulations' ? true : false
 const logFile = prod ? process.argv[4] : 'server.log'
 const port = prod ? process.env.VUE_APP_PORT : 3016
 const itemsCollection =  prod ? process.env.VUE_APP_COLLECTION : 'organisationItems'
+const listCollection =  prod ? process.env.VUE_APP_LIST_COLLECTION : 'organisationCheckList'
 
 ON_DEATH((signal, err) => {
   let logStr = new Date()
@@ -81,7 +82,9 @@ MongoClient.connect(url, { useUnifiedTopology: true, maxIdleTimeMS: maxIdleTime 
   db = client.db('db')
 
   db.createCollection(itemsCollection, function(error, collection) {})
+  db.createCollection(listCollection, function(error, collection) {})
 
+  db.listCollection = db.collection(listCollection)
   db.itemsCollection = db.collection(itemsCollection)
 
   io.on('connection', (socket) => {

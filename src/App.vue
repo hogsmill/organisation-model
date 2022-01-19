@@ -9,7 +9,7 @@
     </div>
     <h1>{{ organisation() }}</h1>
     <CheckList v-if="tab == 'checkList'" />
-    <Organisation v-if="tab == 'organisation'" />
+    <Admin v-if="tab == 'admin'" />
   </div>
 </template>
 
@@ -20,14 +20,14 @@ import ls from './lib/localStorage.js'
 
 import Header from './components/Header.vue'
 import CheckList from './components/CheckList.vue'
-import Organisation from './components/Organisation.vue'
+import Admin from './components/Admin.vue'
 
 export default {
   name: 'App',
   components: {
     Header,
     CheckList,
-    Organisation
+    Admin
   },
   data() {
     return {

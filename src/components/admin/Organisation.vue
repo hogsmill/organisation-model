@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import bus from '../socket.js'
+import bus from '../../socket.js'
 
 export default {
   data() {

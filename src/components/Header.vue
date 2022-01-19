@@ -23,8 +23,8 @@
         <li class="nav-item" :class="{ active: tab == 'checkList' }">
           <a class="nav-link pointer" @click="setTab('checkList')">Check List</a>
         </li>
-        <li class="nav-item" :class="{ active: tab == 'organisation' }">
-          <a class="nav-link pointer" @click="setTab('organisation')">Organisation</a>
+        <li class="nav-item" :class="{ active: tab == 'admin' }">
+          <a class="nav-link pointer" @click="setTab('admin')">Admin</a>
         </li>
         <li class="nav-item">
           <a class="nav-link pointer" @click="show()">Feedback</a>

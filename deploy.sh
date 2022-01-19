@@ -15,6 +15,7 @@ BASEPORT=4750
 REPO="https://github.com/hogsmill/organisation-model.git"
 MAINAPP="organisation-model"
 MAINCOLLECTION="organisationItems"
+MAINLISTCOLLECTION="organisationCheckList"
 MAINNAME="Organisation Model"
 ROUTES=(
   '','','Agile Simulations'
@@ -36,6 +37,10 @@ do
   if [ "$COLLECTIONSUFFIX" != "" ]; then
     COLLECTION="${COLLECTION}${COLLECTIONSUFFIX}"
   fi
+  LISTCOLLECTION=$MAINLISTCOLLECTION
+  if [ "$COLLECTIONSUFFIX" != "" ]; then
+    LISTCOLLECTION="${LISTCOLLECTION}${COLLECTIONSUFFIX}"
+  fi
   APPNAME=$MAINNAME
   let PORT=$BASEPORT+$i
 
@@ -54,6 +59,7 @@ do
   ENVFILE="$DIR/.env"
   echo "VUE_APP_PORT=$PORT" > $ENVFILE
   echo "VUE_APP_COLLECTION=$COLLECTION" >> $ENVFILE
+  echo "VUE_APP_LIST_COLLECTION=$LISTCOLLECTION" >> $ENVFILE
   if [ ! -z "$APPNAME" ]; then
     echo "VUE_APP_NAME=$APPNAME" >> $ENVFILE
   fi
