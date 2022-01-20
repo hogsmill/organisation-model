@@ -69,6 +69,10 @@ export default {
     .fas {
       margin: 3px;
       color: #888;
+
+      &.disabled {
+        color: #ddd;
+      }
     }
 
     .sub {

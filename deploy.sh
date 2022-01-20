@@ -19,7 +19,8 @@ MAINLISTCOLLECTION="organisationCheckList"
 MAINNAME="Organisation Model"
 ROUTES=(
   '','','Agile Simulations'
-  'new','New', 'New'
+  'new','New','New'
+  'richemont','Richemont','Richemont'
 )
 
 for ((i = 0; i < ${#ROUTES[@]}; i++))
