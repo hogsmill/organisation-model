@@ -51,6 +51,13 @@ module.exports = {
     _updateCheckList(db, io)
   },
 
+  updateOrganisation: function(db, io, name, debugOn) {
+
+    if (debugOn) { console.log('updateOrganisation') }
+
+    _updateOrganisation(db, io)
+  },
+
   addItem: function(db, io, data, debugOn) {
 
     if (debugOn) { console.log('addItem', data) }
@@ -89,6 +96,47 @@ module.exports = {
           _updateOrganisation(db, io)
         })
       })
+    })
+  },
+
+  moveItem: function(db, io, data, debugOn) {
+
+    if (debugOn) { console.log('moveItem', data) }
+
+    db.itemsCollection.find({}).toArray((err, res) => {
+      if (err) throw err
+      for (let i = 0; i < res.length; i++) {
+        const item = res[i]
+        if (item.id == data.item.id) {
+          console.log('item', item.name, item.id, item.parent)
+          db.itemsCollection.updateOne({id: item.id}, {$set: {parent: data.target.id}}, (err) => {
+            if (err) throw err
+            io.emit('moveItemDone', 'item')
+          })
+        }
+        if (item.id == data.item.parent) {
+          console.log('old parent', item.name, item.id)
+          const children = []
+          for (let i = 0; i < item.children.length; i++) {
+            if (item.children[i] != data.item.id) {
+              children.push(item.children[i])
+            }
+          }
+          db.itemsCollection.updateOne({id: item.id}, {$set: {children: children}}, (err) => {
+            if (err) throw err
+            io.emit('moveItemDone', 'oldParent')
+          })
+        }
+        if (item.id == data.target.id) {
+          console.log('new parent', item.name, item.id)
+          const children = item.children
+          children.push(data.item.id)
+          db.itemsCollection.updateOne({id: item.id}, {$set: {children: children}}, (err) => {
+            if (err) throw err
+            io.emit('moveItemDone', 'newParent')
+          })
+        }
+      }
     })
   },
 

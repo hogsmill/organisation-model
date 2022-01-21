@@ -107,9 +107,13 @@ MongoClient.connect(url, { useUnifiedTopology: true, maxIdleTimeMS: maxIdleTime 
 
     socket.on('sendCheckOrganisation', (data) => { dbStore.checkOrganisation(db, io, data, debugOn) })
 
+    socket.on('sendUpdateOrganisation', () => { dbStore.updateOrganisation(db, io, debugOn) })
+
     socket.on('sendAddItem', (data) => { dbStore.addItem(db, io, data, debugOn) })
 
     socket.on('sendDeleteItem', (data) => { dbStore.deleteItem(db, io, data, debugOn) })
+
+    socket.on('sendMoveItem', (data) => { dbStore.moveItem(db, io, data, debugOn) })
 
     socket.on('sendSaveItemName', (data) => { dbStore.saveItemName(db, io, data, debugOn) })
 

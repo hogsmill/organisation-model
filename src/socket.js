@@ -42,9 +42,13 @@ socket.on('updateConnections', (data) => { bus.$emit('updateConnections', data) 
 
 bus.$on('sendCheckOrganisation', (data) => { socket.emit('sendCheckOrganisation', data) })
 
+bus.$on('sendUpdateOrganisation', () => { socket.emit('sendUpdateOrganisation') })
+
 bus.$on('sendAddItem', (data) => { socket.emit('sendAddItem', data) })
 
 bus.$on('sendDeleteItem', (data) => { socket.emit('sendDeleteItem', data) })
+
+bus.$on('sendMoveItem', (data) => { socket.emit('sendMoveItem', data) })
 
 bus.$on('sendSaveItemName', (data) => { socket.emit('sendSaveItemName', data) })
 
@@ -59,6 +63,8 @@ bus.$on('sendToggleEnableListItem', (data) => { socket.emit('sendToggleEnableLis
 bus.$on('sendToggleHasItem', (data) => { socket.emit('sendToggleHasItem', data) })
 
 // Receive
+
+socket.on('moveItemDone', (data) => { bus.$emit('moveItemDone', data) })
 
 socket.on('updateOrganisation', (data) => { bus.$emit('updateOrganisation', data) })
 

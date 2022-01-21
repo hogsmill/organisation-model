@@ -2,12 +2,16 @@
   <div class="org">
     <div v-for="(item, index) in organisation" :key="index">
       <div v-for="(n, i) in item.n" :key="i" class="spacer sub" />
-      <div v-if="editingName != item.item.id" class="item sub">
+      <div class="actions sub">
         <i v-if="item.item.children.length" class="fas fa-trash-alt disabled" title="Cannot Delete" @click="cannotDeleteItem(item.item)" />
         <i v-if="!item.item.children.length" class="fas fa-trash-alt" title="Delete" @click="deleteItem(item.item)" />
+        <i class="fas fa-sitemap" title="Move item" @click="moveItem(item.item.id)" />
         <i class="fas fa-plus-square" title="Add Child" @click="addChild(item.item.id)" />
         <input type="checkbox" :checked="item.item.isTeam" @click="toggleEnableIsTeam(item.item)">
-        {{ item.item.name }}
+      </div>
+      <div v-if="editingName != item.item.id" class="item sub">
+        <span v-if="moving && moving != item.item.id" @click="moveItemTarget(item.item.id)" class="moving">{{ item.item.name }}</span>
+        <span v-if="!moving || moving == item.item.id">{{ item.item.name }}</span>
         <i class="fas fa-edit" title="Edit Item Name" @click="editName(item.item.id)" />
       </div>
       <div v-if="editingName == item.item.id" class="item sub">
@@ -24,7 +28,9 @@ import bus from '../../socket.js'
 export default {
   data() {
     return {
-      editingName: ''
+      editingName: '',
+      moving: false,
+      moveItemDone: {}
     }
   },
   computed: {
@@ -32,7 +38,25 @@ export default {
       return this.$store.getters.getOrganisation
     }
   },
+  created() {
+    bus.$on('moveItemDone', (done) => {
+      this.moveItemDone[done] = true
+      console.log(done, this.moveItemDone)
+      if (this.moveItemComplete()) {
+        this.moveItemDone = {}
+        bus.$emit('sendUpdateOrganisation')
+      }
+    })
+  },
   methods: {
+    moveItemComplete() {
+      return this.moveItemDone.item && this.moveItemDone.oldParent && this.moveItemDone.newParent
+    },
+    findFromId(id) {
+      return this.organisation.find((i) => {
+        return i.item.id == id
+      }).item
+    },
     cannotDeleteItem(item) {
       alert('Cannot delete ' + item.name + ' as it has children')
     },
@@ -40,6 +64,20 @@ export default {
       if (confirm('Delete ' + item.name + '?')) {
         bus.$emit('sendDeleteItem', item)
       }
+    },
+    moveItem(id) {
+      this.moving = id
+      const item = this.findFromId(id)
+      alert('Click on the node you want "' + item.name + '" to be a child of')
+    },
+    moveItemTarget(id) {
+      const item = this.findFromId(this.moving)
+      const target = this.findFromId(id)
+      if (confirm('Move "' + item.name + '" under "' + target.name + '"')) {
+        this.moveItemDone = {}
+        bus.$emit('sendMoveItem', {item: item, target: target})
+      }
+      this.moving = ''
     },
     addChild(id) {
       bus.$emit('sendAddItem', {parent: id, name: 'New Item'})
@@ -75,8 +113,28 @@ export default {
       }
     }
 
+    .actions {
+      input {
+        margin: 0 3px;
+        position: relative;
+        top: 1px;
+      }
+    }
+
+    .moving {
+      border: 1px solid green;
+      color: green;
+      &:hover {
+        color: #fff;
+        background-color: green;
+      }
+    }
     .sub {
       display: inline-block;
+
+      span {
+        padding: 2px;
+      }
 
       &.spacer {
         width: 50px;
