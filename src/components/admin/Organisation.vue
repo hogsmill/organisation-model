@@ -6,8 +6,9 @@
         <i v-if="item.item.children.length" class="fas fa-trash-alt disabled" title="Cannot Delete" @click="cannotDeleteItem(item.item)" />
         <i v-if="!item.item.children.length" class="fas fa-trash-alt" title="Delete" @click="deleteItem(item.item)" />
         <i class="fas fa-sitemap" title="Move item" @click="moveItem(item.item.id)" />
-        <i class="fas fa-plus-square" title="Add Child" @click="addChild(item.item.id)" />
-        <input type="checkbox" :checked="item.item.isTeam" @click="toggleEnableIsTeam(item.item)">
+        <i class="fas fa-plus-square" v-if="!item.item.isMember" title="Add Child" @click="addChild(item.item.id, false)" />
+        <i class="fas fa-user" v-if="item.item.isTeam" title="Add Member" @click="addChild(item.item.id, true)" />
+        <input type="checkbox" v-if="!item.item.isMember" :checked="item.item.isTeam" @click="toggleEnableIsTeam(item.item)">
       </div>
       <div v-if="editingName != item.item.id" class="item sub">
         <span v-if="moving && moving != item.item.id" @click="moveItemTarget(item.item.id)" class="moving">{{ item.item.name }}</span>
@@ -79,8 +80,9 @@ export default {
       }
       this.moving = ''
     },
-    addChild(id) {
-      bus.$emit('sendAddItem', {parent: id, name: 'New Item'})
+    addChild(id, member) {
+      const label = member ? 'New Member' : 'New Item'
+      bus.$emit('sendAddItem', {parent: id, name: label, member: member})
     },
     editName(id) {
       this.editingName = id

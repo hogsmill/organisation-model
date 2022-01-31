@@ -3,11 +3,12 @@ const orgFuns = require('./lib/org.js')
 
 const { v4: uuidv4 } = require('uuid')
 
-function newItem(name, parent) {
+function newItem(name, parent, member) {
   return {
     id: uuidv4(),
     name: name,
     isTeam: false,
+    isMember: member,
     parent: parent,
     children: [],
     members: [],
@@ -64,7 +65,7 @@ module.exports = {
 
     db.itemsCollection.findOne({id: data.parent}, (err, res) => {
       if (err) throw err
-      const item = newItem(data.name, data.parent)
+      const item = newItem(data.name, data.parent, data.member)
       const children = res.children
       children.push(item.id)
       db.itemsCollection.updateOne({id: data.parent}, {$set: {children: children}}, (err) => {
