@@ -9,6 +9,7 @@ function newItem(name, parent, member) {
     name: name,
     isTeam: false,
     isMember: member,
+    isLead: false,
     parent: parent,
     children: [],
     members: [],
@@ -151,11 +152,13 @@ module.exports = {
     })
   },
 
-  toggleItemIsTeam: function(db, io, data, debugOn) {
+  toggleItemAttribute: function(db, io, data, debugOn) {
 
-    if (debugOn) { console.log('toggleItemIsTeam', data) }
+    if (debugOn) { console.log('toggleItemAttribute', data) }
 
-    db.itemsCollection.updateOne({id: data.id}, {$set: {isTeam: data.isTeam}}, (err) => {
+    const update = {}
+    update[data.attribute] = data.value
+    db.itemsCollection.updateOne({id: data.id}, {$set: update}, (err) => {
       if (err) throw err
       _updateOrganisation(db, io, debugOn)
     })

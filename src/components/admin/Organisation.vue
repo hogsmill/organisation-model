@@ -7,8 +7,9 @@
         <i v-if="!item.item.children.length" class="fas fa-trash-alt" title="Delete" @click="deleteItem(item.item)" />
         <i class="fas fa-sitemap" title="Move item" @click="moveItem(item.item.id)" />
         <i class="fas fa-plus-square" v-if="!item.item.isMember" title="Add Child" @click="addChild(item.item.id, false)" />
-        <i class="fas fa-user" v-if="item.item.isTeam" title="Add Member" @click="addChild(item.item.id, true)" />
-        <input type="checkbox" v-if="!item.item.isMember" :checked="item.item.isTeam" @click="toggleEnableIsTeam(item.item)">
+        <i class="fas fa-users" v-if="!item.item.isMember" :class="{ 'selected': item.item.isTeam }" :title="isTeamLabel(item.item)" @click="toggleEnableItemAttribute(item.item, 'isTeam')" />
+        <i class="fas fa-user-plus" v-if="item.item.isTeam" title="Add Member" @click="addChild(item.item.id, true)" />
+        <i class="fas fa-user-tie" v-if="item.item.isMember" :class="{ 'selected': item.item.isLead }" :title="isLeadLabel(item.item)" @click="toggleEnableItemAttribute(item.item, 'isLead')" />
       </div>
       <div v-if="editingName != item.item.id" class="item sub">
         <span v-if="moving && moving != item.item.id" @click="moveItemTarget(item.item.id)" class="moving">{{ item.item.name }}</span>
@@ -50,6 +51,12 @@ export default {
     })
   },
   methods: {
+    isTeamLabel(item) {
+      return item.isTeam ? item.name + ' is a team' : item.name + ' is not a team'
+    },
+    isLeadLabel(item) {
+      return item.isLead ? item.name + ' is a team leader/manager' : item.name + ' is not a team leader/manager'
+    },
     moveItemComplete() {
       return this.moveItemDone.item && this.moveItemDone.oldParent && this.moveItemDone.newParent
     },
@@ -92,9 +99,9 @@ export default {
       bus.$emit('sendSaveItemName', {id: id, name: itemName})
       this.editingName = ''
     },
-    toggleEnableIsTeam(item) {
-      const isTeam = !item.isTeam
-      bus.$emit('sendToggleItemIsTeam', {id: item.id, isTeam: isTeam})
+    toggleEnableItemAttribute(item, attribute) {
+      const val = !item[attribute]
+      bus.$emit('sendToggleItemAttribute', {id: item.id, attribute: attribute, value: val})
     }
   }
 }
@@ -133,6 +140,10 @@ export default {
     }
     .sub {
       display: inline-block;
+
+      .selected {
+        color: green;
+      }
 
       span {
         padding: 2px;

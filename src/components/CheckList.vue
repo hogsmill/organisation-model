@@ -6,7 +6,8 @@
       </div>
     </div>
     <div v-for="(item, index) in organisation" :key="index" class="item">
-      <div class="sub" :style="{'padding-left': item.n * 25 + 'px'}" :class="{'lighter': !item.item.isTeam}">
+      <div class="sub" :style="{'padding-left': item.n * 25 + 'px'}" :class="{'lighter': !item.item.isTeam && !item.item.isMember}">
+        <i class="fas fa-user" v-if="item.item.isMember" />
         {{ item.item.name }}
       </div>
       <div v-for="(listItem, lindex) in checkList" :key="lindex" class="list-item">
@@ -78,6 +79,10 @@ export default {
         .fa-check {
           color: green;
         }
+      }
+
+      .fa-user {
+        color: #888;
       }
     }
   }

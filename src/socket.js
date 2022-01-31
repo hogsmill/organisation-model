@@ -52,7 +52,7 @@ bus.$on('sendMoveItem', (data) => { socket.emit('sendMoveItem', data) })
 
 bus.$on('sendSaveItemName', (data) => { socket.emit('sendSaveItemName', data) })
 
-bus.$on('sendToggleItemIsTeam', (data) => { socket.emit('sendToggleItemIsTeam', data) })
+bus.$on('sendToggleItemAttribute', (data) => { socket.emit('sendToggleItemAttribute', data) })
 
 bus.$on('sendAddCheckListItem', (data) => { socket.emit('sendAddCheckListItem', data) })
 
