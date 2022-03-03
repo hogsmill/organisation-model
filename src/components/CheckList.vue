@@ -37,7 +37,7 @@ export default {
     },
     toggleEnableItem(item, listItem) {
       const hasItem = !this.hasItem(item, listItem)
-      bus.$emit('sendToggleHasItem', {id: item.id, item: listItem.id, hasItem: hasItem})
+      bus.emit('sendToggleHasItem', {id: item.id, item: listItem.id, hasItem: hasItem})
     }
   }
 }

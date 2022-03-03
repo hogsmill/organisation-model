@@ -1,14 +1,15 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
 
-Vue.use(Vuex)
+import { createStore } from 'vuex'
 
-export const store = new Vuex.Store({
+export const store = createStore({
   state: {
     thisGame: 'Organisation Model',
     connections: 0,
     connectionError: null,
     localStorageStatus: true,
+    modals: {
+      'feedback': false
+    },
     tab: 'checkList',
     organisation: [],
     checkList: []
@@ -25,6 +26,9 @@ export const store = new Vuex.Store({
     },
     getLocalStorageStatus: (state) => {
       return state.localStorageStatus
+    },
+    getModals: (state) => {
+      return state.modals
     },
     getTab: (state) => {
       return state.tab
@@ -55,6 +59,16 @@ export const store = new Vuex.Store({
     localStorageStatus: (state, payload) => {
       state.localStorageStatus = payload
     },
+    showModal: (state, payload) => {
+      const modals = Object.keys(state.modals)
+      for (let i = 0; i < modals.length; i++) {
+        state.modals[modals[i]] = false
+      }
+      state.modals[payload] = true
+    },
+    hideModal: (state, payload) => {
+      state.modals[payload] = false
+    },
     setTab: (state, payload) => {
       state.tab = payload
     },
@@ -74,6 +88,12 @@ export const store = new Vuex.Store({
     },
     localStorageStatus: ({ commit }, payload) => {
       commit('localStorageStatus', payload)
+    },
+    showModal: ({ commit }, payload) => {
+      commit('showModal', payload)
+    },
+    hideModal: ({ commit }, payload) => {
+      commit('hideModal', payload)
     },
     setTab: ({ commit }, payload) => {
       commit('setTab', payload)

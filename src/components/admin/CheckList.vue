@@ -61,19 +61,19 @@ export default {
   methods: {
     addNew() {
       const item = document.getElementById('new-list-item').value
-      bus.$emit('sendAddCheckListItem', item)
+      bus.emit('sendAddCheckListItem', item)
     },
     editName(id) {
       this.editingItem = id
     },
     saveName(id) {
       const name = document.getElementById('list-item-' + id).value
-      bus.$emit('sendSaveCheckListItemName', {id: id, name: name})
+      bus.emit('sendSaveCheckListItemName', {id: id, name: name})
       this.editingItem = ''
     },
     toggleEnableItem(item) {
       const enabled = !item.enabled
-      bus.$emit('sendToggleEnableListItem', {id: item.id, enabled: enabled})
+      bus.emit('sendToggleEnableListItem', {id: item.id, enabled: enabled})
     }
   }
 }

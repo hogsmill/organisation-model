@@ -41,12 +41,12 @@ export default {
     }
   },
   created() {
-    bus.$on('moveItemDone', (done) => {
+    bus.on('moveItemDone', (done) => {
       this.moveItemDone[done] = true
       console.log(done, this.moveItemDone)
       if (this.moveItemComplete()) {
         this.moveItemDone = {}
-        bus.$emit('sendUpdateOrganisation')
+        bus.emit('sendUpdateOrganisation')
       }
     })
   },
@@ -70,7 +70,7 @@ export default {
     },
     deleteItem(item) {
       if (confirm('Delete ' + item.name + '?')) {
-        bus.$emit('sendDeleteItem', item)
+        bus.emit('sendDeleteItem', item)
       }
     },
     moveItem(id) {
@@ -83,25 +83,25 @@ export default {
       const target = this.findFromId(id)
       if (confirm('Move "' + item.name + '" under "' + target.name + '"')) {
         this.moveItemDone = {}
-        bus.$emit('sendMoveItem', {item: item, target: target})
+        bus.emit('sendMoveItem', {item: item, target: target})
       }
       this.moving = ''
     },
     addChild(id, member) {
       const label = member ? 'New Member' : 'New Item'
-      bus.$emit('sendAddItem', {parent: id, name: label, member: member})
+      bus.emit('sendAddItem', {parent: id, name: label, member: member})
     },
     editName(id) {
       this.editingName = id
     },
     saveName(id) {
       const itemName = document.getElementById('editing-name-' + id).value
-      bus.$emit('sendSaveItemName', {id: id, name: itemName})
+      bus.emit('sendSaveItemName', {id: id, name: itemName})
       this.editingName = ''
     },
     toggleEnableItemAttribute(item, attribute) {
       const val = !item[attribute]
-      bus.$emit('sendToggleItemAttribute', {id: item.id, attribute: attribute, value: val})
+      bus.emit('sendToggleItemAttribute', {id: item.id, attribute: attribute, value: val})
     }
   }
 }

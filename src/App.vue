@@ -10,6 +10,7 @@
     <h1>{{ organisation() }}</h1>
     <CheckList v-if="tab == 'checkList'" />
     <Admin v-if="tab == 'admin'" />
+    <Modals />
   </div>
 </template>
 
@@ -19,6 +20,7 @@ import bus from './socket.js'
 import ls from './lib/localStorage.js'
 
 import Header from './components/Header.vue'
+import Modals from './components/Modals.vue'
 import CheckList from './components/CheckList.vue'
 import Admin from './components/Admin.vue'
 
@@ -26,6 +28,7 @@ export default {
   name: 'App',
   components: {
     Header,
+    Modals,
     CheckList,
     Admin
   },
@@ -47,22 +50,22 @@ export default {
   created() {
     this.$store.dispatch('localStorageStatus', ls.check())
 
-    bus.$on('connectionError', (data) => {
+    bus.on('connectionError', (data) => {
       this.$store.dispatch('updateConnectionError', data)
     })
 
-    bus.$on('updateConnections', (data) => {
+    bus.on('updateConnections', (data) => {
       this.$store.dispatch('updateConnectionError', null)
       this.$store.dispatch('updateConnections', data)
     })
 
-    bus.$emit('sendCheckOrganisation', this.organisation())
+    bus.emit('sendCheckOrganisation', this.organisation())
 
-    bus.$on('updateOrganisation', (data) => {
+    bus.on('updateOrganisation', (data) => {
       this.$store.dispatch('updateOrganisation', data)
     })
 
-    bus.$on('updateCheckList', (data) => {
+    bus.on('updateCheckList', (data) => {
       this.$store.dispatch('updateCheckList', data)
     })
   },

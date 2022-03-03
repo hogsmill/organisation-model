@@ -25,49 +25,49 @@ if (connectToAgileSimulations) {
 
 if (connectToAgileSimulations) {
 
-  bus.$on('sendCheckLogin', (data) => { asSocket.emit('sendCheckLogin', data) })
+  bus.on('sendCheckLogin', (data) => { asSocket.emit('sendCheckLogin', data) })
 
-  bus.$on('sendRating', (data) => { asSocket.emit('sendRating', data) })
+  bus.on('sendRating', (data) => { asSocket.emit('sendRating', data) })
 
-  asSocket.on('loginSuccess', (data) => { bus.$emit('loginSuccess', data) })
+  asSocket.on('loginSuccess', (data) => { bus.emit('loginSuccess', data) })
 
-  asSocket.on('logout', (data) => { bus.$emit('logout', data) })
+  asSocket.on('logout', (data) => { bus.emit('logout', data) })
 }
 
-socket.on('connect_error', (err) => { bus.$emit('connectionError', err) })
+socket.on('connect_error', (err) => { bus.emit('connectionError', err) })
 
-socket.on('updateConnections', (data) => { bus.$emit('updateConnections', data) })
+socket.on('updateConnections', (data) => { bus.emit('updateConnections', data) })
 
 // Send
 
-bus.$on('sendCheckOrganisation', (data) => { socket.emit('sendCheckOrganisation', data) })
+bus.on('sendCheckOrganisation', (data) => { socket.emit('sendCheckOrganisation', data) })
 
-bus.$on('sendUpdateOrganisation', () => { socket.emit('sendUpdateOrganisation') })
+bus.on('sendUpdateOrganisation', () => { socket.emit('sendUpdateOrganisation') })
 
-bus.$on('sendAddItem', (data) => { socket.emit('sendAddItem', data) })
+bus.on('sendAddItem', (data) => { socket.emit('sendAddItem', data) })
 
-bus.$on('sendDeleteItem', (data) => { socket.emit('sendDeleteItem', data) })
+bus.on('sendDeleteItem', (data) => { socket.emit('sendDeleteItem', data) })
 
-bus.$on('sendMoveItem', (data) => { socket.emit('sendMoveItem', data) })
+bus.on('sendMoveItem', (data) => { socket.emit('sendMoveItem', data) })
 
-bus.$on('sendSaveItemName', (data) => { socket.emit('sendSaveItemName', data) })
+bus.on('sendSaveItemName', (data) => { socket.emit('sendSaveItemName', data) })
 
-bus.$on('sendToggleItemAttribute', (data) => { socket.emit('sendToggleItemAttribute', data) })
+bus.on('sendToggleItemAttribute', (data) => { socket.emit('sendToggleItemAttribute', data) })
 
-bus.$on('sendAddCheckListItem', (data) => { socket.emit('sendAddCheckListItem', data) })
+bus.on('sendAddCheckListItem', (data) => { socket.emit('sendAddCheckListItem', data) })
 
-bus.$on('sendSaveCheckListItemName', (data) => { socket.emit('sendSaveCheckListItemName', data) })
+bus.on('sendSaveCheckListItemName', (data) => { socket.emit('sendSaveCheckListItemName', data) })
 
-bus.$on('sendToggleEnableListItem', (data) => { socket.emit('sendToggleEnableListItem', data) })
+bus.on('sendToggleEnableListItem', (data) => { socket.emit('sendToggleEnableListItem', data) })
 
-bus.$on('sendToggleHasItem', (data) => { socket.emit('sendToggleHasItem', data) })
+bus.on('sendToggleHasItem', (data) => { socket.emit('sendToggleHasItem', data) })
 
 // Receive
 
-socket.on('moveItemDone', (data) => { bus.$emit('moveItemDone', data) })
+socket.on('moveItemDone', (data) => { bus.emit('moveItemDone', data) })
 
-socket.on('updateOrganisation', (data) => { bus.$emit('updateOrganisation', data) })
+socket.on('updateOrganisation', (data) => { bus.emit('updateOrganisation', data) })
 
-socket.on('updateCheckList', (data) => { bus.$emit('updateCheckList', data) })
+socket.on('updateCheckList', (data) => { bus.emit('updateCheckList', data) })
 
 export default bus
